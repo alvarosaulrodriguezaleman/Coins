@@ -1,18 +1,15 @@
 package coins;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class PermutationIterator implements Iterator {
-    private final ArrayList<Integer> arr;
-    private final boolean[] comb;
+    private final boolean[] comb; // Indica los elementos seleccionados
     private boolean hasNext;
     
-    public PermutationIterator(ArrayList<Integer> arr) {
-        this.arr = arr;
-        hasNext = !arr.isEmpty();
-        comb = new boolean[arr.size()];
+    public PermutationIterator(int size) {
+        hasNext = size != 0;
+        comb = new boolean[size];
     }
     
     @Override
@@ -28,7 +25,7 @@ public class PermutationIterator implements Iterator {
         }
         
         // Generamos una nueva permutación
-        for (int i = 0; i < arr.size(); i++) {
+        for (int i = 0; i < comb.length; i++) {
             if (!comb[i]) {
                 comb[i] = true;
                 break;

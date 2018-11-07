@@ -20,6 +20,7 @@ public class Coins implements Iterable {
     public static void main(String[] args) {
         Coins c = new Coins("coins.txt");
         
+        // Le pedimos al usuario el valor a buscar
         Scanner in = new Scanner(System.in);
         System.out.println("Insert the desired value:");
         int num = in.nextInt();
@@ -28,14 +29,23 @@ public class Coins implements Iterable {
         
         Iterator pi = c.iterator();
         boolean[] res = null; // Almacena la mejor combinación encontrada
+        double t = System.currentTimeMillis();
         while (pi.hasNext()) {
             boolean[] b = (boolean[]) pi.next();
             if (c.parseCombinationSum(b) == num){
                 System.out.println(c.parseCombinationSelection(b));
-                res = new boolean[b.length];
-                System.arraycopy(b, 0, res, 0, b.length);
+                if (res == null) {
+                    // Primera solución encontrada
+                    res = new boolean[b.length];
+                    System.arraycopy(b, 0, res, 0, b.length);  
+                }
+                if (c.numberOfItemsSelected(b) < c.numberOfItemsSelected(res)) {
+                    // Se ha encontrado una solución más óptima
+                    System.arraycopy(b, 0, res, 0, b.length);    
+                }
             }
         }
+        t = System.currentTimeMillis() - t;
         if (res == null) {
             System.out.println("No result was found");
         } else {
@@ -44,6 +54,7 @@ public class Coins implements Iterable {
             System.out.println("Selection:\t" + c.parseCombinationSelection(res));
             System.out.println("Values: \t" + c.parseCombinationValues(res));
         }
+        System.out.println("Process time:\t" + t/1000);
     }
     
     /**
@@ -89,6 +100,19 @@ public class Coins implements Iterable {
     }
     
     /**
+     * Devuelve el número de elementos seleccionados en la combinación comb.
+     */
+    public int numberOfItemsSelected(boolean[] comb) {
+        int res = 0;
+        for (int i = 0; i < comb.length; i++) {
+            if (comb[i]) {
+                res++;
+            }
+        }
+        return res;
+    }
+    
+    /**
      * Muestra por la salida estándar los valores de las monedas actuales.
      */
     public void showInput() {
@@ -101,7 +125,7 @@ public class Coins implements Iterable {
 
     @Override
     public Iterator iterator() {
-        return new PermutationIterator(arr);
+        return new PermutationIterator(arr.size());
     }
 }
 
